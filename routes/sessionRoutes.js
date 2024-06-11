@@ -1,6 +1,7 @@
 const express = require("express");
 const passport = require("passport");
 const router = express.Router();
+const csrfProtection = require('../middleware/csrfProtection')
 
 const {
   logonShow,
@@ -9,10 +10,10 @@ const {
   logoff,
 } = require("../controllers/sessionController");
 
-router.route("/register").get(registerShow).post(registerDo);
+router.route("/register").get(csrfProtection, registerShow).post(registerDo);
 router
   .route("/logon")
-  .get(logonShow)
+  .get(csrfProtection, logonShow)
   .post(
     passport.authenticate("local", {
       successRedirect: "/",

@@ -1,4 +1,3 @@
-const { required } = require('joi')
 const mongoose = require('mongoose')
 
 const ItemShcema = new mongoose.Schema({
@@ -15,21 +14,23 @@ const ItemShcema = new mongoose.Schema({
         type: Number,
         required: [true, 'Please provide item price'],
         min: 1,
-        max: [15, 'Price can not be more than 15 characters '],
+        // max: [15, 'Price can not be more than 15 characters '],
+        maxlength: [15, 'Name can not be more than 50 characters'],
         
     },
     quantity: {
         type: Number,
         required: [true, 'Plase provide item quantity'],
         min: 1,
-        max: [12, 'Quantity can not be more than 12 characters'],
+        // max: [12, 'Quantity can not be more than 12 characters'],
+        maxlength: [12, 'Name can not be more than 50 characters'],
     },
     madeIn: {
         type: String,
         maxlength: 50,
     },
     createdBy: {
-        type:mongoose.Types.ObjectId,
+        type: mongoose.Types.ObjectId,
         ref: 'User',
         required: [true, 'Please provide user'],
     },

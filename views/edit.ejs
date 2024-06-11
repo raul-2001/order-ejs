@@ -1,0 +1,24 @@
+<h2>Edit item </h2>
+<form action="/items/update/<%= item.id %>"  method="POST">
+    <div>
+        <label for="itemNumber">Item number</label>
+        <input name="itemNumber" id="itemNumber"  type="text" value="<%= item.itemNumber %>"/>
+    </div>
+    <div>
+        <label for="itemName">Item Name</label>
+        <input name="itemName" id="itemName" type="text" value="<%= item.itemName %>"/>
+    </div>
+    <div>
+        <label for="price" >Price</label>
+        <input name="price" id="price" type="text" value="<%= item.price %>"/>
+    </div>
+    <div>
+        <label for="quantity" >Quantity</label>
+        <input name="quantity" id="quantity" type="text" value="<%= item.quantity %>"/>
+    </div>
+    <div>
+        <label for="madeIn" >Made in</label>
+        <input name="madeIn" id="madeIn" type="text" value="<%= item.madeIn %>"/>
+    </div>
+    <button type="submit">Update</button>
+</form>
