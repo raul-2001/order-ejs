@@ -2,10 +2,15 @@ const express = require('express')
 const  app = express()
 require('dotenv').config()
 require('express-async-errors')
+
+// routes 
+const itemRoutes = require('./routes/items')
+
 const session = require("express-session")
 
 const connectDB = require('./db/connect')
-
+const csrf = require('csurf')
+const cookieParser = require('cookie-parser')
 
 const MongoDBStore = require("connect-mongodb-session")(session);
 const url = process.env.MONGO_URI;
@@ -46,45 +51,48 @@ app.use(passport.session());
 app.use(require("connect-flash")());
 
 
-
-
-
 app.set("view engine", "ejs");
+
 app.use(require("body-parser").urlencoded({ extended: true }));
+
+
+app.use(cookieParser(process.env.SESSION_SECRET))
+
+// app.use(csrf)
+
+
+// // app.use(express.urlencoded({ extended: false }))
+
+// // CSRF-HOST
+// const csrfOptions = {
+//   protected_operations: ['POST', 'PATCH'],
+//   protected_content_types: ['application/json', 'application/x-www-form-urlencoded'],
+//   development_mode: app.get('env') !== 'production',
+// };
+
+// const csrfMiddlware = csrf(csrfOptions);
+
+// app.use(csrfMiddlware)
 
 
 app.use(require("./middleware/storeLocals"));
 app.get("/", (req, res) => {
   res.render("index");
 });
-app.use("/sessions", require("./routes/sessionRoutes"));
+
+const auth = require("./middleware/auth");
+
+app.use('/items',auth, itemRoutes)
+
+
+
+const sessionRoutes = require("./routes/sessionRoutes")
+app.use("/sessions", sessionRoutes);
 
 // secret word handling
-// let secretWord = "syzygy";
-app.get("/secretWord", (req, res) => {
-    if(!req.session.secretWord) {
-        req.session.secretWord = "syzygy";
-    }
-    res.locals.info = req.flash("info");
-    res.locals.errors = req.flash("error")
-    res.render("secretWord", {
-        secretWord: req.session.secretWord });
-});
+const secretWordRouter = require("./routes/secretWord");
+app.use("/secretWord", auth, secretWordRouter);
 
-
-app.post("/secretWord", (req, res) => {
-    if (req.body.secretWord.toUpperCase()[0] == "P") {
-        req.flash("error", "That word won't work!");
-        req.flash("error", "You can't use words that start with p.");
-    } else {
-        req.session.secretWord = req.body.secretWord;
-        req.flash("info", "The secret word was changed.");
-      
-    }
-    res.redirect("/secretWord");
-});
-
-  
 
 app.use((req, res) => {
   res.status(404).send(`That page (${req.url}) was not found.`);

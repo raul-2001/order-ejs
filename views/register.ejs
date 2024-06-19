@@ -1,6 +1,9 @@
 <%- include("partials/head.ejs") %>
 <%- include("partials/header.ejs") %>
 <form method="POST">
+
+  <input name="_csrf" hidden value="<%= csrfToken %>" /> 
+
   <div>
     <label name="name">Enter your name:</label>
     <input name="name" />
@@ -10,11 +13,11 @@
     <input name="email" />
   </div>
   <div>
-    <label for="password" name="password">Enter your password:</label>
+    <label name="password">Enter your password:</label>
     <input type="password" name="password" />
   </div>
   <div>
-    <label for="password1" name="password1">Confirm your password:</label>
+    <label name="password1">Confirm your password:</label>
     <input type="password" name="password1" />
   </div>
   <div>

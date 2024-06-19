@@ -1,0 +1,29 @@
+<%- include("partials/head.ejs") %>
+<a href="/"><button>Back</button></a>
+<h2>Items List</h2>
+<table id="items-table">
+  <tr id="items-table-header">
+    <th>Item number</th>
+    <th>Item name</th>
+    <th>Price</th>
+    <th>Quantity</th>
+    <th>Made in</th>
+    <th>Created by</th>
+    <th colspan="2"></th>
+  </tr>
+  <% if (items && items.length) { %>
+    <% items.forEach((item) => { %>
+      <tr>
+        <td><%= item.itemNumber %></td>
+        <td><%= item.itemName %></td>
+        <td><%= item.price %></td>
+        <td><%= item.quantity %></td>
+        <td><%= item.madeIn %></td>
+        <td><%= item.createdBy %></td>
+        <td><a href="/items/edit/<%= item.id %>"><button type="button" >edit</button></a></td>
+        
+      </tr>
+    <% }) %>
+  <% } %>
+</table>
+<%- include("partials/footer.ejs") %>
