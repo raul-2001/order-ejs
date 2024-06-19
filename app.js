@@ -4,7 +4,7 @@ require('dotenv').config()
 require('express-async-errors')
 const session = require("express-session")
 
-// const connectDB = require('./db/connect')
+const connectDB = require('./db/connect')
 
 
 const MongoDBStore = require("connect-mongodb-session")(session);
@@ -34,11 +34,30 @@ if (app.get("env") === "production") {
 
 app.use(session(sessionParms));
 
+//
+const passport = require("passport");
+const passportInit = require("./passport/passportInit");
+
+passportInit();
+app.use(passport.initialize());
+app.use(passport.session());
+
+//
 app.use(require("connect-flash")());
+
+
+
 
 
 app.set("view engine", "ejs");
 app.use(require("body-parser").urlencoded({ extended: true }));
+
+
+app.use(require("./middleware/storeLocals"));
+app.get("/", (req, res) => {
+  res.render("index");
+});
+app.use("/sessions", require("./routes/sessionRoutes"));
 
 // secret word handling
 // let secretWord = "syzygy";
@@ -63,7 +82,9 @@ app.post("/secretWord", (req, res) => {
       
     }
     res.redirect("/secretWord");
-  });
+});
+
+  
 
 app.use((req, res) => {
   res.status(404).send(`That page (${req.url}) was not found.`);
@@ -74,11 +95,12 @@ app.use((err, req, res, next) => {
   console.log(err);
 });
 
+
 const port = process.env.PORT || 3000
 
 const start = async () => {
     try {
-        // await connectDB(process.env.MONGO_URI)
+        await connectDB(process.env.MONGO_URI)
         app.listen(port, () => 
         console.log(`Server is listening on port ${port}...`))
     } catch (error) {
